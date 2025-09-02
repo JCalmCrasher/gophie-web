@@ -183,9 +183,9 @@ class Home extends Component {
         {
           timeout: 30000,
           auth: {
-            username: process.env.REACT_APP_OCENA_USERNAME,
-            password: process.env.REACT_APP_OCENA_PASSWORD
-          }
+            username: import.meta.env.VITE_OCENA_USERNAME,
+            password: import.meta.env.VITE_OCENA_PASSWORD,
+          },
         }
       );
     }
@@ -232,13 +232,15 @@ class Home extends Component {
     });
     axios
       .get(
-          `${this.state.api}/list/?page=${this.state.listIndex}&engine=${this.state.server}`, {
-      auth: {
-        username: process.env.REACT_APP_OCENA_USERNAME,
-        password: process.env.REACT_APP_OCENA_PASSWORD
-      },
-      withCredentials: false
-    })
+        `${this.state.api}/list/?page=${this.state.listIndex}&engine=${this.state.server}`,
+        {
+          auth: {
+            username: import.meta.env.VITE_OCENA_USERNAME,
+            password: import.meta.env.VITE_OCENA_PASSWORD,
+          },
+          withCredentials: false,
+        }
+      )
       .then((res) => {
         const movies = res.data;
         let newIndex = this.state.listIndex;

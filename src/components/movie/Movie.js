@@ -24,198 +24,140 @@ export default class Movie extends Component {
   toggleHover = () => {
     this.setState({ hover: !this.state.hover });
   };
+  this._isMounted = false;
+ }
 
-  toggleSidebar = () => {
-    this.setState({ showMovieSidebar: !this.state.showMovieSidebar });
-  };
+ toggleHover = () => {
+  this.setState({ hover: !this.state.hover });
+ };
 
-  // Add download to API to make it trackable
-  addDownload = () => {
-    axios
-      .post(this.state.ratings_api + "/download/", {
-        ip_address: this.props.ip_address,
-        referral_id: this.props.data.referral_id,
-      }, {
-        auth: {
-          username: process.env.REACT_APP_OCENA_USERNAME,
-          password: process.env.REACT_APP_OCENA_PASSWORD
-        },
-      })
-      .then(() => {
-        console.log(`added ${this.props.data.name} to downloads on ocena`);
-      });
-  };
+ toggleSidebar = () => {
+  this.setState({ showMovieSidebar: !this.state.showMovieSidebar });
+ };
 
-  getAverage = () => {
-    const { data } = this.props;
-    axios
-      .post(this.state.ratings_api + "/movie/ratings/average/", {
-        referral_id: data.referral_id,
-      }, {
-        auth: {
-          username: process.env.REACT_APP_OCENA_USERNAME,
-          password: process.env.REACT_APP_OCENA_PASSWORD
-        },
-      })
-      .then((res) => {
-        this.setState({
-          ratings: res.data,
-        });
-      })
-      .catch((err) => {
-        if (err) {
-          this.setState({
-            error: true,
-          });
-        }
-      });
-  };
-
-  getShareID = (action) => {
-    const { data } = this.props;
-
-    axios
-      .post(this.state.ratings_api + "/referral/", {
-        ip_address: this.props.ip_address,
-        referral_id: data.referral_id,
-      }, {
-        auth: {
-          username: process.env.REACT_APP_OCENA_USERNAME,
-          password: process.env.REACT_APP_OCENA_PASSWORD
-        }
-      })
-      .then((res) => {
-        const { data } = res;
-        if (action) {
-          this.setState({ loadingReferralID: false });
-        }
-        this.setState({ referralID: data }, () => {
-          if (action) {
-            this.shareMovie();
-          }
-        });
-      })
-      .catch((err) => {
-        this.setState(
-          {
-            loadingReferralID: false,
-            referralID: data.referral_id,
-          },
-          () => {
-            // error thrown leading to a  bug of share modal always displayed on first renders
-            // this.shareMovie();
-          }
-        );
-        console.log(err);
-      });
-  };
-
-  shareMovie() {
-    if (this.state.referralID) {
-      this.props.shareMovie({
-        ...this.props.data,
-        referralID: this.state.referralID,
-      });
-    } else {
-      this.setState({ loadingReferralID: true });
-      this.getShareID("share");
+ // Add download to API to make it trackable
+ addDownload = () => {
+  axios
+   .post(
+    this.state.ratings_api + "/download/",
+    {
+     ip_address: this.props.ip_address,
+     referral_id: this.props.data.referral_id
+    },
+    {
+     auth: {
+      username: import.meta.env.VITE_OCENA_USERNAME,
+      password: import.meta.env.VITE_OCENA_PASSWORD
+     }
     }
-  }
+   )
+   .then(() => {
+    console.log(`added ${this.props.data.name} to downloads on ocena`);
+   });
+ };
 
-  componentDidMount() {
-    this.getAverage();
-    this.getShareID();
-    this._isMounted = true;
-  }
-
-  componentWillUnmount() {
-    this._isMounted = false;
-  }
-
-  render() {
-    const { cover_photo_link, size, name, engine, Index } = this.props.data;
-    const { server, ip_address, shareMovie } = this.props;
-
-    var translateStyle;
-    if (this.state.hover) {
-      translateStyle = { transform: "translateY(-10px)" };
-    } else {
-      translateStyle = { transform: "translate(0px)" };
+ getAverage = () => {
+  const { data } = this.props;
+  axios
+   .post(
+    this.state.ratings_api + "/movie/ratings/average/",
+    {
+     referral_id: data.referral_id
+    },
+    {
+     auth: {
+      username: import.meta.env.VITE_OCENA_USERNAME,
+      password: import.meta.env.VITE_OCENA_PASSWORD
+     }
     }
+   )
+   .then((res) => {
+    this.setState({
+     ratings: res.data
+    });
+   })
+   .catch((err) => {
+    if (err) {
+     this.setState({
+      error: true
+     });
+    }
+   });
+ };
 
-    return (
-      <>
-        <Style.MovieCard>
-          <div className="movie-image">
-            <img
-              className="position-relative"
-              onClick={() => {
-                this.toggleSidebar();
-              }}
-              style={translateStyle}
-              onMouseEnter={this.toggleHover}
-              onMouseLeave={this.toggleHover}
-              onError={(e) => (
-                // eslint-disable-next-line
-                (e.target.onerror = null),
-                (e.target.src =
-                  "https://raw.githubusercontent.com/Go-phie/gophie-web/master/public/no-pic.png")
-              )}
-              onKeyDown={() => {
-                this.toggleSidebar();
-              }}
-              src={
-                isImageURL(cover_photo_link)
-                  ? cover_photo_link
-                  : "https://raw.githubusercontent.com/Go-phie/gophie-web/master/public/no-pic.png"
-              }
-              alt={name}
-            />
-            <p style={translateStyle} className="movie-size">
-              {" "}
-              {size}{" "}
-            </p>
-          </div>
-          <div className="movie__about">
-            <Link to={`/${greekFromEnglish(engine)}/${Index}`}>
-              <h3
-                className="name"
-                onClick={() => {
-                  this.toggleSidebar();
-                }}
-              >
-                {" "}
-                {name}{" "}
-              </h3>
-            </Link>
+ getShareID = (action) => {
+  const { data } = this.props;
 
-            {/* Meta about - star rating and movie source */}
-            <div className="movie__about-meta">
-              <div className="movie-rating">
-                <Rating
-                  value={Math.round(
-                    this.state.ratings.average_ratings
-                      ? this.state.ratings.average_ratings
-                      : 0
-                  )}
-                  max={5}
-                  readOnly
-                />
-              </div>
-              <p className="movie-source"> {greekFromEnglish(engine)} </p>
-            </div>
-          </div>
-        </Style.MovieCard>
-        {this.state.showMovieSidebar ? (
-          <MovieSidebar
-            toggle={this.toggleSidebar}
-            movie={this.props.data}
-            ip_address={ip_address}
-            shareMovie={shareMovie}
-            server={server}
-          />
-        ) : null}
-      </>
+  axios
+   .post(
+    this.state.ratings_api + "/referral/",
+    {
+     ip_address: this.props.ip_address,
+     referral_id: data.referral_id
+    },
+    {
+     auth: {
+      username: import.meta.env.VITE_OCENA_USERNAME,
+      password: import.meta.env.VITE_OCENA_PASSWORD
+     }
+    }
+   )
+   .then((res) => {
+    const { data } = res;
+    if (action) {
+     this.setState({ loadingReferralID: false });
+    }
+    this.setState({ referralID: data }, () => {
+     if (action) {
+      this.shareMovie();
+     }
+    });
+   })
+   .catch((err) => {
+    this.setState(
+     {
+      loadingReferralID: false,
+      referralID: data.referral_id
+     },
+     () => {
+      // error thrown leading to a  bug of share modal always displayed on first renders
+      // this.shareMovie();
+     }
     );
+    console.log(err);
+   });
+ };
+
+ shareMovie() {
+  if (this.state.referralID) {
+   this.props.shareMovie({
+    ...this.props.data,
+    referralID: this.state.referralID
+   });
+  } else {
+   this.setState({ loadingReferralID: true });
+   this.getShareID("share");
+  }
+ }
+
+ componentDidMount() {
+  this.getAverage();
+  this.getShareID();
+  this._isMounted = true;
+ }
+
+ componentWillUnmount() {
+  this._isMounted = false;
+ }
+
+ render() {
+  const { cover_photo_link, size, name, engine, Index } = this.props.data;
+  const { server, ip_address, shareMovie } = this.props;
+
+  var translateStyle;
+  if (this.state.hover) {
+   translateStyle = { transform: "translateY(-10px)" };
+  } else {
+   translateStyle = { transform: "translate(0px)" };
   }
 }

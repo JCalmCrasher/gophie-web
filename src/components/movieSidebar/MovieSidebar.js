@@ -34,6 +34,9 @@ export default function MovieSidebar(props) {
   const [readMore, setReadMore] = useState(false);
   const [loadingReferralID, setLoadingReferralID] = useState(false);
 
+  const [readMore, setReadMore] = useState(false);
+  const [loadingReferralID, setLoadingReferralID] = useState(false);
+
   const handlePlayRequest = (e) => {
     e.preventDefault();
     setPlay(true);
@@ -41,16 +44,20 @@ export default function MovieSidebar(props) {
 
   const rateMovie = (value) => {
     axios
-      .post(ratings_api + "/rate/", {
-        referral_id: movie.referral_id,
-        ip_address: ip_address,
-        score: value,
-      }, {
-        auth: {
-          username: process.env.REACT_APP_OCENA_USERNAME,
-          password: process.env.REACT_APP_OCENA_PASSWORD
+      .post(
+        ratings_api + "/rate/",
+        {
+          referral_id: movie.referral_id,
+          ip_address: ip_address,
+          score: value,
+        },
+        {
+          auth: {
+            username: import.meta.env.VITE_OCENA_USERNAME,
+            password: import.meta.env.VITE_OCENA_PASSWORD,
+          },
         }
-      })
+      )
       .then((res) => {
         if (res.data !== null) {
           setIpRating(res.data.score);
@@ -67,15 +74,19 @@ export default function MovieSidebar(props) {
 
   const getShareID = (action) => {
     axios
-      .post(ratings_api + "/referral/", {
-        ip_address: ip_address,
-        referral_id: movie.referral_id,
-      }, {
-        auth: {
-          username: process.env.REACT_APP_OCENA_USERNAME,
-          password: process.env.REACT_APP_OCENA_PASSWORD
+      .post(
+        ratings_api + "/referral/",
+        {
+          ip_address: ip_address,
+          referral_id: movie.referral_id,
+        },
+        {
+          auth: {
+            username: import.meta.env.VITE_OCENA_USERNAME,
+            password: import.meta.env.VITE_OCENA_PASSWORD,
+          },
         }
-      })
+      )
       .then((res) => {
         const { data } = res;
         if (action) {
@@ -103,15 +114,19 @@ export default function MovieSidebar(props) {
 
   const addDownload = () => {
     axios
-      .post(ratings_api + "/download/", {
-        ip_address: ip_address,
-        referral_id: movie.referral_id,
-      }, {
-        auth: {
-          username: process.env.REACT_APP_OCENA_USERNAME,
-          password: process.env.REACT_APP_OCENA_PASSWORD
+      .post(
+        ratings_api + "/download/",
+        {
+          ip_address: ip_address,
+          referral_id: movie.referral_id,
+        },
+        {
+          auth: {
+            username: import.meta.env.VITE_OCENA_USERNAME,
+            password: import.meta.env.VITE_OCENA_PASSWORD,
+          },
         }
-      })
+      )
       .then((res) => {
         console.log(res);
       })
@@ -135,15 +150,19 @@ export default function MovieSidebar(props) {
   useEffect(() => {
     const getShareID = (action) => {
       axios
-        .post(ratings_api + "/referral/", {
-          ip_address: ip_address,
-          referral_id: movie.referral_id,
-        },{
-        auth: {
-          username: process.env.REACT_APP_OCENA_USERNAME,
-          password: process.env.REACT_APP_OCENA_PASSWORD
-        }
-        })
+        .post(
+          ratings_api + "/referral/",
+          {
+            ip_address: ip_address,
+            referral_id: movie.referral_id,
+          },
+          {
+            auth: {
+              username: import.meta.env.VITE_OCENA_USERNAME,
+              password: import.meta.env.VITE_OCENA_PASSWORD,
+            },
+          }
+        )
         .then((res) => {
           const { data } = res;
           if (action) {

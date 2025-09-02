@@ -46,15 +46,19 @@ class Popup extends Component {
 
   shareMovie = () => {
     axios
-      .post(this.state.ratings_api + "/referral/", {
-        ip_address: this.props.ip_address,
-        referral_id: this.props.movie.referral_id,
-      }, {
-        auth: {
-          username: process.env.REACT_APP_OCENA_USERNAME,
-          password: process.env.REACT_APP_OCENA_PASSWORD
+      .post(
+        this.state.ratings_api + "/referral/",
+        {
+          ip_address: this.props.ip_address,
+          referral_id: this.props.movie.referral_id,
         },
-      })
+        {
+          auth: {
+            username: import.meta.env.VITE_OCENA_USERNAME,
+            password: import.meta.env.VITE_OCENA_PASSWORD,
+          },
+        }
+      )
       .then((res) => {
         this.setState(
           {
@@ -68,14 +72,18 @@ class Popup extends Component {
   getAverage = () => {
     const { movie } = this.props;
     axios
-      .post(this.state.ratings_api + "/movie/ratings/average/", {
-        referral_id: movie.referral_id,
-      },{
-        auth: {
-          username: process.env.REACT_APP_OCENA_USERNAME,
-          password: process.env.REACT_APP_OCENA_PASSWORD
+      .post(
+        this.state.ratings_api + "/movie/ratings/average/",
+        {
+          referral_id: movie.referral_id,
         },
-      })
+        {
+          auth: {
+            username: import.meta.env.VITE_OCENA_USERNAME,
+            password: import.meta.env.VITE_OCENA_PASSWORD,
+          },
+        }
+      )
       .then((res) => {
         this.setState({
           ratings: res.data,
@@ -93,15 +101,19 @@ class Popup extends Component {
   getRatings = () => {
     const { movie } = this.props;
     axios
-      .post(this.state.ratings_api + "/movie/rating/", {
-        referral_id: movie.referral_id,
-        ip_address: this.props.ip_address,
-      }, {
-        auth: {
-          username: process.env.REACT_APP_OCENA_USERNAME,
-          password: process.env.REACT_APP_OCENA_PASSWORD
+      .post(
+        this.state.ratings_api + "/movie/rating/",
+        {
+          referral_id: movie.referral_id,
+          ip_address: this.props.ip_address,
         },
-      })
+        {
+          auth: {
+            username: import.meta.env.VITE_OCENA_USERNAME,
+            password: import.meta.env.VITE_OCENA_PASSWORD,
+          },
+        }
+      )
       .then((res) => {
         if (res.data !== null) {
           this.setState({
@@ -121,16 +133,20 @@ class Popup extends Component {
   rateMovie = (value) => {
     const { movie } = this.props;
     axios
-      .post(this.state.ratings_api + "/rate/", {
-        referral_id: movie.referral_id,
-        ip_address: this.props.ip_address,
-        score: value,
-      }, {
-        auth: {
-          username: process.env.REACT_APP_OCENA_USERNAME,
-          password: process.env.REACT_APP_OCENA_PASSWORD
+      .post(
+        this.state.ratings_api + "/rate/",
+        {
+          referral_id: movie.referral_id,
+          ip_address: this.props.ip_address,
+          score: value,
         },
-      })
+        {
+          auth: {
+            username: import.meta.env.VITE_OCENA_USERNAME,
+            password: import.meta.env.VITE_OCENA_PASSWORD,
+          },
+        }
+      )
       .then((res) => {
         if (res.data !== null) {
           this.setState({

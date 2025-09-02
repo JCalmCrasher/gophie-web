@@ -14,13 +14,13 @@ import {
   RedditShareButton,
   RedditIcon,
 } from "react-share";
-import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { CopyToClipboard } from "react-copy-to-clipboard";
 
 const copy = {
-  copiedText: 'URL Copied to Clipboard',
-  defaultText: 'Copy URL',
-  copiedClass: 'bg-light gbtn-primary mr-3 px-3 py-1 rounded text-bold',
-  defaultClass: 'gbtn gbtn-primary mr-3 px-3 py-1 rounded'
+  copiedText: "URL Copied to Clipboard",
+  defaultText: "Copy URL",
+  copiedClass: "bg-light gbtn-primary mr-3 px-3 py-1 rounded text-bold",
+  defaultClass: "gbtn gbtn-primary mr-3 px-3 py-1 rounded",
 };
 
 const ShareModal = (props) => {
@@ -40,7 +40,7 @@ const ShareModal = (props) => {
         setUrlCopied(false);
       }, 2000);
     }
-  }, [isUrlCopied])
+  }, [isUrlCopied]);
 
   const { movie } = props;
   let url = "";
@@ -103,8 +103,10 @@ const ShareModal = (props) => {
               </RedditShareButton>
             </Row>
             <Row className="justify-content-center mt-3 eoErth">
-              <CopyToClipboard text={url}
-                onCopy={() => copyURLToClipboard(true)}>
+              <CopyToClipboard
+                text={url}
+                onCopy={() => copyURLToClipboard(true)}
+              >
                 <button
                   className={isUrlCopied ? copy.copiedClass : copy.defaultClass}
                   onClick={copyURLToClipboard}
